@@ -138,16 +138,16 @@ export class CoinbasePrimeAPI {
     return this.makeRequest(REST_METHODS.GET, path);
   }
 
-  async fetchProducts(): Promise<any> {
+  async fetchProducts(product: string): Promise<any> {
     // return this.makeRequest(REST_METHODS.GET, 'portfolios');
     const path = `portfolios/${this.portfolioId}/products`;
     const products = await this.makeRequest(
       REST_METHODS.GET,
       path,
       '',
-      '?limit=10000',
+      '?limit=1',
     );
-    return products.products.find((item) => item.id === 'BTC-EUR');
+    return products.products.find((item) => item.id === product);
   }
 
   async fetchBalance(): Promise<any> {
@@ -228,6 +228,10 @@ export class CoinbasePrimeAPI {
     const path = `portfolios/${this.portfolioId}/order`;
 
     const originalAmount = createOrderDto.amount;
+
+    /// TODO:  00000001 should be replaced with 'base_min_size' from fetchProducts(product)
+    /// Products we got from fetchProducts(product) should be cached in memory
+    /// So we dont need to call fetchProducts every time.
     const minSize = 0.00000001;
     const reducedAmount = this.reduceToMinSize(originalAmount, minSize);
     console.log(reducedAmount); // Output: 0.00031717
@@ -249,6 +253,9 @@ export class CoinbasePrimeAPI {
     const data = JSON.stringify(jsonData);
 
     const reqResponse = await this.makeRequest(REST_METHODS.POST, path, data);
+
+    /// Rails is expecting id field in response
+    reqResponse['id'] = reqResponse['order_id'];
     return reqResponse;
   }
 
@@ -258,12 +265,15 @@ export class CoinbasePrimeAPI {
 
   async fetchOrder(params: FetchOrderDto): Promise<OrderDto> {
     console.log(params);
-    //const product = this.convertPairToProduct(createOrderDto.ccy_pair);
-
     const path = `portfolios/${this.portfolioId}/orders/${params.orderId}`;
 
     const reqResponse = await this.makeRequest(REST_METHODS.GET, path);
     const respOrder = reqResponse.order;
+
+    const price =
+      respOrder.side?.toLowerCase() == 'buy'
+        ? respOrder.quote_value / respOrder.filled_quantity
+        : respOrder.average_filled_price;
 
     const order: OrderDto = {
       id: respOrder.id,
@@ -274,7 +284,7 @@ export class CoinbasePrimeAPI {
       symbol: this.convertProductToPair(respOrder.product_id),
       side: respOrder.side?.toLowerCase(),
       type: respOrder.type?.toLowerCase(),
-      price: respOrder.quote_value / respOrder.filled_quantity, //respOrder.average_filled_price,
+      price: price,
       stopPrice: respOrder.stop_price,
       cost: respOrder.filled_value, //filled_value is value wihout fee, with fee included use reqResponse.quote_value
       amount: respOrder.filled_quantity,

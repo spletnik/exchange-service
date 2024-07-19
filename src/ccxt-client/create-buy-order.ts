@@ -1,4 +1,3 @@
-import Limit from '../exchange/limit';
 import { CreateOrderDto } from '../orders/dto/order.dto';
 import { OrderDto } from '../orders/dto/order-response.dto';
 import CcxtBaseClient from './ccxt-base.client';

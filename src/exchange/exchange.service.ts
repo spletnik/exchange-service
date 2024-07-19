@@ -14,7 +14,7 @@ export class ExchangeService {
   async getPortfolios(): Promise<any> {
     // Example usage
     const api = new CoinbasePrimeAPI();
-    const response = await api.fetchProducts();
+    const response = await api.fetchProducts('BTC-EUR');
     return response;
   }
 
