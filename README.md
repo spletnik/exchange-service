@@ -6,7 +6,7 @@
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
 
-<a href="https://kriptomat.atlassian.net/l/cp/eDai81L4" target="_blank"><img src="https://kriptomat.atlassian.net/l/cp/eDai81L4" alt="Confulence Documentation" /></a>
+
 
 
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
@@ -25,6 +25,12 @@
 </p>
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+
+
+## Confluence Documentation (Kriptomat DOCS)
+
+<a href="https://kriptomat.atlassian.net/l/cp/eDai81L4" target="_blank"> Kriptomat Confulence Documentation</a>
+
 
 ## Description
 
